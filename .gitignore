@@ -1,0 +1,11 @@
+.DS_Store
+.claude/settings.local.json
+.ufbt/
+dist/
+build/
+.vscode/
+compile_commands.json
+*.fap
+*.fap.dSYM
+test/build/
+.clang-format

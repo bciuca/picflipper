@@ -1,0 +1,35 @@
+# PIC18F67J60 ICSP tool (dump + write/flash). See docs/picflipper_plan.md.
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026, BC (https://github.com/bciuca). All rights reserved.
+
+App(
+    appid="picflipper",
+    name="PICFlipper",
+    apptype=FlipperAppType.EXTERNAL,
+    entry_point="picflipper_app",
+    requires=["gui", "storage", "dialogs"],
+    stack_size=4 * 1024,
+    fap_category="GPIO",
+    fap_icon="images/picflipper.png",  # 10x10 launcher icon
+    fap_icon_assets="images",          # in-app image assets (wiring diagram) -> picflipper_icons.h
+    # Explicit list so the build never picks up the re/ RE workspace (.c dumps there).
+    sources=[
+        "src/main.c",
+        "src/pic_ops.c",
+        "src/pic_jobs.c",
+        "src/dump_store.c",
+        "src/sha256.c",
+        "src/pic_icsp.c",
+        "src/pic_dump.c",
+        "src/pic_program.c",
+        "src/app_ui.c",
+        "src/dump_writer.c",
+        "src/view_pins.c",
+        "src/view_console.c",
+        "src/view_about.c",
+    ],
+    fap_version="0.3",
+    fap_description="ICSP tool for PIC18F97J60 family of MCUs: dump, write/restore/verify flash, pin status, console",
+    fap_author="BC",
+    fap_weburl="https://github.com/bciuca/picflipper",
+)
