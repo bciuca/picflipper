@@ -133,7 +133,7 @@ While a lot of these struggles are on me, there is an undeniable laziness to Cla
 
 ## License
 
-[MIT](LICENSE) Copyright (c) 2026, BC (https://github.com/bciuca). All rights reserved..
+[MIT](LICENSE) Copyright (c) 2026, BC (https://github.com/bciuca). All rights reserved.
 
 All source here is original work. It targets the Flipper Zero SDK and implements the PIC18F67J60 ICSP protocol per the public Microchip
 spec [DS39688D](https://ww1.microchip.com/downloads/en/devicedoc/39688d.pdf). No third-party code is bundled.
