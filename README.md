@@ -121,9 +121,19 @@ ufbt launch       # build, install to /ext/apps/GPIO/, and run (quit qFlipper fi
     are LSb-first.
 - The 128 KB image is streamed to SD in 4 KB chunks.
 
+## Project commentary
+I used Claude Opus 4.8 for this project, again with a lot of handholding. I've never had to argue with anyone to keep working as much as I have with Claude. Like most projects, it began with an enthusiastic and optimistic Claude where anything is possible. But as soon as we hit a snag, Claude constantly gave me options like:
++ this is impossible and let's agree to call it quits here  
++ there is already a commercially available PIC programmer for purchase with official support, so why bother implementing one  
++ several more reasons why this is impossible...
+
+I had to keep nudging it to investigate blind spots that I thought were obvious enough. At times, I had no idea wtf I was talking about because I'm not too familiar with the chip family, but I knew enough to look in the datasheet and call BS. I struggled with Claude through every bit of this to keep it moving and prevent it from stopping unless it hit a real block. In hindsight, this was mostly my fault. I should have planned better than just writing a simple MD file with specs and goal. I should have designed an iterative workflow that could programmatically keep the agents chugging along. I underestimated the complexity.
+
+While a lot of these struggles are on me, there is an undeniable laziness to Claude that prefers to end quickly vs exploring other options or even just simply not suggest we quit every time. Maybe that's a good thing to not burn tokens on dead ends, but the biggest issue for me is the empathetic human tone it takes. I would be ok with stopping and getting a read on the blockers, but suggesting we quit is infuriating.
+
 ## License
 
-[MIT](LICENSE) ÂCopyright (c) 2026, BC (https://github.com/bciuca). All rights reserved..
+[MIT](LICENSE) Copyright (c) 2026, BC (https://github.com/bciuca). All rights reserved..
 
 All source here is original work. It targets the Flipper Zero SDK and implements the PIC18F67J60 ICSP protocol per the public Microchip
 spec [DS39688D](https://ww1.microchip.com/downloads/en/devicedoc/39688d.pdf). No third-party code is bundled.
