@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2026, BC (https://github.com/bciuca). All rights reserved.
+// Copyright (c) 2026, BC (https://github.com/bciuca).
 
 // Where PIC dumps live on the SD card, and the helpers to name, pick, and hash
 // them. Operates on Storage/DialogsApp directly — no app state.

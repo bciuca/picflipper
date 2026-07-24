@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2026, BC (https://github.com/bciuca). All rights reserved.
+// Copyright (c) 2026, BC (https://github.com/bciuca).
 
 // Internal shared state for the PIC operations subsystem, split between
 // pic_ops.c (view controller: rendering, input, detection gate, timer,

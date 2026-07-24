@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2026, BC (https://github.com/bciuca). All rights reserved.
+// Copyright (c) 2026, BC (https://github.com/bciuca).
 
 // "About" view: sticky inverted title bar + word-wrapped, scrolling body text.
 // Fully self-contained — the copy and the word-wrap live here; the host only

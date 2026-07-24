@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2026, BC (https://github.com/bciuca). All rights reserved.
+// Copyright (c) 2026, BC (https://github.com/bciuca).
 
 // Output writers: raw .bin and Intel HEX, single-shot and streaming. No GPIO.
 #include "dump_writer.h"

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2026, BC (https://github.com/bciuca). All rights reserved.
+// Copyright (c) 2026, BC (https://github.com/bciuca).
 
 // ICSP worker-thread bodies for the PIC operations subsystem: dump flash, dump
 // live RAM, and write/restore/verify. Each runs on a FuriThread, drives the

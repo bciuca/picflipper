@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2026, BC (https://github.com/bciuca). All rights reserved.
+// Copyright (c) 2026, BC (https://github.com/bciuca).
 
 // Self-contained SHA-256 (streaming). The firmware ships mbedtls' sha256 but
 // does not export it in the FAP API symbol table, so the app carries its own.

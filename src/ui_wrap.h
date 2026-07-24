@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2026, BC (https://github.com/bciuca). All rights reserved.
+// Copyright (c) 2026, BC (https://github.com/bciuca).
 
 // Hard character-wrap for space-less strings (filenames, addresses) that would
 // otherwise run off the 128 px screen. Unlike the About view's word-wrap, this

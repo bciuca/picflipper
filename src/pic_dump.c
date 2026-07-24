@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2026, BC (https://github.com/bciuca). All rights reserved.
+// Copyright (c) 2026, BC (https://github.com/bciuca).
 
 // Dump engine: device-ID probe + code-memory read loop over ICSP.
 // PIC18F67J60: code memory 0x000000-0x01FFFF, DEVID at 0x3FFFFE.

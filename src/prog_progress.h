@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2026, BC (https://github.com/bciuca). All rights reserved.
+// Copyright (c) 2026, BC (https://github.com/bciuca).
 
 // Pure mapping of a write/verify engine progress event onto the shared view
 // model (AppState). Split out of pic_jobs.c's progress callback so it can be

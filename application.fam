@@ -1,6 +1,6 @@
 # PIC18F67J60 ICSP tool (dump + write/flash). See docs/picflipper_plan.md.
 # SPDX-License-Identifier: MIT
-# Copyright (c) 2026, BC (https://github.com/bciuca). All rights reserved.
+# Copyright (c) 2026, BC (https://github.com/bciuca).
 
 App(
     appid="picflipper",

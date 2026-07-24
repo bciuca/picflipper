@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2026, BC (https://github.com/bciuca). All rights reserved.
+// Copyright (c) 2026, BC (https://github.com/bciuca).
 
 // Bit-bang low-voltage ICSP for the PIC18F97J60 family (read path only).
 // Every protocol detail here is confirmed against DS39688D. Key points:

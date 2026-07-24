@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2026, BC (https://github.com/bciuca). All rights reserved.
+// Copyright (c) 2026, BC (https://github.com/bciuca).
 
 // Write/flash engine over ICSP. Built to DS39688D: Table 3-1 (bulk erase),
 // Table 3-2 (row erase), Table 3-3 (program), §4.2 (verify). The source image

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2026, BC (https://github.com/bciuca). All rights reserved.
+// Copyright (c) 2026, BC (https://github.com/bciuca).
 
 // PIC operations subsystem — view controller: renders the dump/progress view,
 // handles input, runs the chip-detection gate and the spinner/hold timer, and
