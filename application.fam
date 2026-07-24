@@ -30,6 +30,6 @@ App(
     ],
     fap_version="0.3",
     fap_description="ICSP tool for PIC18F97J60 family of MCUs: dump, write/restore/verify flash, pin status, console",
-    fap_author="BC",
+    fap_author="BC (https://github.com/bciuca)",
     fap_weburl="https://github.com/bciuca/picflipper",
 )
