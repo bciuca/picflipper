@@ -73,9 +73,9 @@ view_set_input_callback (View *view, ViewInputCallback cb)
     (void)cb;
 }
 
-#define with_view_model(view, type, code, update) \
-    {                                             \
-        type = view_get_model(view);              \
-        { code };                                 \
-        view_commit_model(view, update);          \
+#define with_view_model(view, type, code, update)                              \
+    {                                                                          \
+        type = view_get_model(view);                                           \
+        {code};                                                                \
+        view_commit_model(view, update);                                       \
     }

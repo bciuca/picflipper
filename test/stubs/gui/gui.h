@@ -60,11 +60,7 @@ canvas_draw_str (Canvas *canvas, int x, int y, const char *str)
     (void)str;
 }
 static inline void
-canvas_draw_str_aligned (Canvas     *canvas,
-                         int         x,
-                         int         y,
-                         Align       h,
-                         Align       v,
+canvas_draw_str_aligned (Canvas *canvas, int x, int y, Align h, Align v,
                          const char *str)
 {
     (void)canvas;

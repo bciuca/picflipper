@@ -12,21 +12,14 @@
 
 // Build a collision-free <prefix>_<devid>_<ts>[.N].{bin,hex} path pair in the
 // dump dir (created if needed). fname_out receives the chosen base name.
-void dump_store_make_paths(Storage    *storage,
-                           const char *prefix,
-                           uint16_t    devid,
-                           char       *fname_out,
-                           size_t      fname_sz,
-                           char       *binpath,
-                           size_t      bin_sz,
-                           char       *hexpath,
-                           size_t      hex_sz);
+void dump_store_make_paths(Storage *storage, const char *prefix, uint16_t devid,
+                           char *fname_out, size_t fname_sz, char *binpath,
+                           size_t bin_sz, char *hexpath, size_t hex_sz);
 
 // Stream a file through SHA-256; write the 64-char lowercase hex digest (+NUL)
 // into out_hex[65]. Returns false on open/read failure.
-bool dump_store_hash_sha256(Storage    *storage,
-                            const char *path,
-                            char        out_hex[65]);
+bool dump_store_hash_sha256(Storage *storage, const char *path,
+                            char out_hex[65]);
 
 // Modal .bin picker rooted at the dump dir. Fills out_path and returns true on
 // selection; false if the user backed out.

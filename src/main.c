@@ -122,51 +122,49 @@ picflipper_app (void *p)
 
     // main menu
     app->submenu = submenu_alloc();
-    submenu_add_item(
-        app->submenu, "Dump flash image", MenuDumpCode, menu_cb, app);
-    submenu_add_item(
-        app->submenu, "Dump RAM snapshot", MenuDumpRam, menu_cb, app);
-    submenu_add_item(
-        app->submenu, "Write full image", MenuWriteFull, menu_cb, app);
-    submenu_add_item(
-        app->submenu, "Write app data (keep boot)", MenuWriteApp, menu_cb, app);
-    submenu_add_item(
-        app->submenu, "Verify image on PIC", MenuVerify, menu_cb, app);
+    submenu_add_item(app->submenu, "Dump flash image", MenuDumpCode, menu_cb,
+                     app);
+    submenu_add_item(app->submenu, "Dump RAM snapshot", MenuDumpRam, menu_cb,
+                     app);
+    submenu_add_item(app->submenu, "Write full image", MenuWriteFull, menu_cb,
+                     app);
+    submenu_add_item(app->submenu, "Write app data (keep boot)", MenuWriteApp,
+                     menu_cb, app);
+    submenu_add_item(app->submenu, "Verify image on PIC", MenuVerify, menu_cb,
+                     app);
     submenu_add_item(app->submenu, "Wiring", MenuPins, menu_cb, app);
     submenu_add_item(app->submenu, "Debug console", MenuConsole, menu_cb, app);
     submenu_add_item(app->submenu, "About", MenuAbout, menu_cb, app);
-    view_dispatcher_add_view(
-        app->view_dispatcher, PicViewMenu, submenu_get_view(app->submenu));
+    view_dispatcher_add_view(app->view_dispatcher, PicViewMenu,
+                             submenu_get_view(app->submenu));
 
     // dump/write/verify operations + their view
-    app->ops = pic_ops_alloc(
-        app->storage, app->dialogs, app->view_dispatcher, PicViewDump);
+    app->ops = pic_ops_alloc(app->storage, app->dialogs, app->view_dispatcher,
+                             PicViewDump);
     view_set_previous_callback(pic_ops_get_view(app->ops), to_menu);
-    view_dispatcher_add_view(
-        app->view_dispatcher, PicViewDump, pic_ops_get_view(app->ops));
+    view_dispatcher_add_view(app->view_dispatcher, PicViewDump,
+                             pic_ops_get_view(app->ops));
 
     // pin-status + console views
     app->pins = pic_pins_view_alloc();
     view_set_previous_callback(pic_pins_view_get_view(app->pins), to_menu);
-    view_dispatcher_add_view(
-        app->view_dispatcher, PicViewPins, pic_pins_view_get_view(app->pins));
+    view_dispatcher_add_view(app->view_dispatcher, PicViewPins,
+                             pic_pins_view_get_view(app->pins));
 
     app->console = pic_console_view_alloc();
     view_set_previous_callback(pic_console_view_get_view(app->console),
                                to_menu);
-    view_dispatcher_add_view(app->view_dispatcher,
-                             PicViewConsole,
+    view_dispatcher_add_view(app->view_dispatcher, PicViewConsole,
                              pic_console_view_get_view(app->console));
 
     // About page
     app->about = pic_about_view_alloc();
     view_set_previous_callback(pic_about_view_get_view(app->about), to_menu);
-    view_dispatcher_add_view(app->view_dispatcher,
-                             PicViewAbout,
+    view_dispatcher_add_view(app->view_dispatcher, PicViewAbout,
                              pic_about_view_get_view(app->about));
 
-    view_dispatcher_attach_to_gui(
-        app->view_dispatcher, app->gui, ViewDispatcherTypeFullscreen);
+    view_dispatcher_attach_to_gui(app->view_dispatcher, app->gui,
+                                  ViewDispatcherTypeFullscreen);
     view_dispatcher_switch_to_view(app->view_dispatcher, PicViewMenu);
     view_dispatcher_run(app->view_dispatcher);
 

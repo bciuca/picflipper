@@ -11,10 +11,10 @@
 #include <stdio.h>
 #include "sha256.h"
 
-#define TAG               "picflipper"
-#define DUMP_DIR_PARENT   EXT_PATH("apps_data/picflipper")
-#define DUMP_DIR          DUMP_DIR_PARENT "/dumps"
-#define HASH_CHUNK        4096
+#define TAG "picflipper"
+#define DUMP_DIR_PARENT EXT_PATH("apps_data/picflipper")
+#define DUMP_DIR DUMP_DIR_PARENT "/dumps"
+#define HASH_CHUNK 4096
 
 static void
 ensure_dump_dir (Storage *s)
@@ -24,35 +24,22 @@ ensure_dump_dir (Storage *s)
 }
 
 void
-dump_store_make_paths (Storage    *storage,
-                       const char *prefix,
-                       uint16_t    devid,
-                       char       *fname_out,
-                       size_t      fname_sz,
-                       char       *binpath,
-                       size_t      bin_sz,
-                       char       *hexpath,
-                       size_t      hex_sz)
+dump_store_make_paths (Storage *storage, const char *prefix, uint16_t devid,
+                       char *fname_out, size_t fname_sz, char *binpath,
+                       size_t bin_sz, char *hexpath, size_t hex_sz)
 {
     ensure_dump_dir(storage);
     DateTime dt;
     furi_hal_rtc_get_datetime(&dt);
     char base[48];
     // <prefix>_<devid>_YYYY-MM-DD_HH-MM-SS
-    snprintf(base,
-             sizeof(base),
-             "%s_%04X_%04u-%02u-%02u_%02u-%02u-%02u",
-             prefix,
-             (unsigned)devid,
-             (unsigned)dt.year,
-             (unsigned)dt.month,
-             (unsigned)dt.day,
-             (unsigned)dt.hour,
-             (unsigned)dt.minute,
+    snprintf(base, sizeof(base), "%s_%04X_%04u-%02u-%02u_%02u-%02u-%02u",
+             prefix, (unsigned)devid, (unsigned)dt.year, (unsigned)dt.month,
+             (unsigned)dt.day, (unsigned)dt.hour, (unsigned)dt.minute,
              (unsigned)dt.second);
     FuriString *uniq = furi_string_alloc();
-    storage_get_next_filename(
-        storage, DUMP_DIR, base, ".bin", uniq, sizeof(base) - 1);
+    storage_get_next_filename(storage, DUMP_DIR, base, ".bin", uniq,
+                              sizeof(base) - 1);
     snprintf(fname_out, fname_sz, "%s", furi_string_get_cstr(uniq));
     furi_string_free(uniq);
     snprintf(binpath, bin_sz, "%s/%s.bin", DUMP_DIR, fname_out);

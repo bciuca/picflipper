@@ -38,8 +38,7 @@ static int32_t
 pic_dump_worker (void *ctx)
 {
     PicOps *ops = ctx;
-    PicIcsp d
-        = { .pgc = PIC_PIN_PGC, .pgd = PIC_PIN_PGD, .mclr = PIC_PIN_MCLR };
+    PicIcsp d = {.pgc = PIC_PIN_PGC, .pgd = PIC_PIN_PGD, .mclr = PIC_PIN_MCLR};
 
     dump_set(ops, StConnecting, "Entering ICSP...");
     uint8_t *chunk = malloc(DUMP_CHUNK);
@@ -54,9 +53,7 @@ pic_dump_worker (void *ctx)
     pic_icsp_enter(&d);
     uint16_t devid    = pic_read_device_id(&d);
     bool     id_match = (devid & 0xFFE0) == 0x1F20;
-    FURI_LOG_I(TAG,
-               "Device ID = 0x%04X (%s)",
-               (unsigned)devid,
+    FURI_LOG_I(TAG, "Device ID = 0x%04X (%s)", (unsigned)devid,
                id_match            ? "PIC18F67J60 OK"
                : (devid == 0xFFFF) ? "no device / bus floating"
                : (devid == 0x0000) ? "no device / bus low"
@@ -66,9 +63,8 @@ pic_dump_worker (void *ctx)
     {
         pic_icsp_exit(&d);
         free(chunk);
-        FURI_LOG_W(TAG,
-                   "Abort: check MCLR/PGC/PGD/GND + common ground; try "
-                   "swapping PGC/PGD");
+        FURI_LOG_W(TAG, "Abort: check MCLR/PGC/PGD/GND + common ground; try "
+                        "swapping PGC/PGD");
         dump_set(ops, StError, "No device - check wiring/GND");
         ops->worker_active = false;
         return 0;
@@ -88,19 +84,12 @@ pic_dump_worker (void *ctx)
     char fname[48];
     char binpath[128];
     char hexpath[128];
-    dump_store_make_paths(ops->storage,
-                          "pic",
-                          devid,
-                          fname,
-                          sizeof(fname),
-                          binpath,
-                          sizeof(binpath),
-                          hexpath,
-                          sizeof(hexpath));
+    dump_store_make_paths(ops->storage, "pic", devid, fname, sizeof(fname),
+                          binpath, sizeof(binpath), hexpath, sizeof(hexpath));
 
     DumpWriter w;
-    bool       ok
-        = dump_writer_open(&w, ops->storage, binpath, hexpath, PIC_CODE_START);
+    bool       ok =
+        dump_writer_open(&w, ops->storage, binpath, hexpath, PIC_CODE_START);
     uint8_t or_all = 0;
     if (ok)
     {
@@ -154,17 +143,15 @@ pic_dump_worker (void *ctx)
     }
     else
     {
-        FURI_LOG_I(TAG,
-                   "Dump complete: %s%s",
-                   binpath,
+        FURI_LOG_I(TAG, "Dump complete: %s%s", binpath,
                    or_all == 0 ? " [all 0x00]" : "");
         AppState *st   = view_get_model(ops->dump_view);
         st->bytes_done = total;
         st->phase      = StDone;
         if (or_all == 0)
         {
-            snprintf(
-                st->msg, sizeof(st->msg), "Saved (all 0x00: code-protect?)");
+            snprintf(st->msg, sizeof(st->msg),
+                     "Saved (all 0x00: code-protect?)");
         }
         else
         {
@@ -186,8 +173,7 @@ static int32_t
 pic_ram_worker (void *ctx)
 {
     PicOps *ops = ctx;
-    PicIcsp d
-        = { .pgc = PIC_PIN_PGC, .pgd = PIC_PIN_PGD, .mclr = PIC_PIN_MCLR };
+    PicIcsp d = {.pgc = PIC_PIN_PGC, .pgd = PIC_PIN_PGD, .mclr = PIC_PIN_MCLR};
     const uint16_t start = PIC_RAM_START, end = PIC_RAM_END;
     const uint32_t total = (uint32_t)(end - start + 1);
 
@@ -204,9 +190,7 @@ pic_ram_worker (void *ctx)
     pic_icsp_enter(&d);
     uint16_t devid    = pic_read_device_id(&d);
     bool     id_match = (devid & 0xFFE0) == 0x1F20;
-    FURI_LOG_I(TAG,
-               "RAM snapshot DEVID=0x%04X (%s)",
-               (unsigned)devid,
+    FURI_LOG_I(TAG, "RAM snapshot DEVID=0x%04X (%s)", (unsigned)devid,
                id_match ? "PIC18F67J60 OK" : "?");
     if (devid == 0xFFFF || devid == 0x0000)
     {
@@ -242,18 +226,12 @@ pic_ram_worker (void *ctx)
     pic_icsp_exit(&d);
 
     bool ok        = !ops->cancel;
-    char fname[48] = { 0 };
+    char fname[48] = {0};
     if (ok)
     {
         char binpath[128], hexpath[128];
-        dump_store_make_paths(ops->storage,
-                              "picram",
-                              devid,
-                              fname,
-                              sizeof(fname),
-                              binpath,
-                              sizeof(binpath),
-                              hexpath,
+        dump_store_make_paths(ops->storage, "picram", devid, fname,
+                              sizeof(fname), binpath, sizeof(binpath), hexpath,
                               sizeof(hexpath));
         ok = dump_write_bin(ops->storage, binpath, buf, total);
         ok = dump_write_ihex(ops->storage, hexpath, start, buf, total) && ok;
@@ -299,8 +277,8 @@ dump_start (PicOps *ops)
     }
     ops->cancel        = false;
     ops->worker_active = true;
-    FuriThreadCallback fn
-        = (ops->job == JobRam) ? pic_ram_worker : pic_dump_worker;
+    FuriThreadCallback fn =
+        (ops->job == JobRam) ? pic_ram_worker : pic_dump_worker;
     ops->worker = furi_thread_alloc_ex("PicDumpWorker", 4096, fn, ops);
     furi_thread_start(ops->worker);
 }
@@ -330,12 +308,11 @@ static int32_t
 pic_prog_worker (void *ctx)
 {
     PicOps *ops = ctx;
-    PicIcsp d
-        = { .pgc = PIC_PIN_PGC, .pgd = PIC_PIN_PGD, .mclr = PIC_PIN_MCLR };
+    PicIcsp d = {.pgc = PIC_PIN_PGC, .pgd = PIC_PIN_PGD, .mclr = PIC_PIN_MCLR};
     pic_icsp_init(&d);
 
-    dump_set(
-        ops, StConnecting, ops->verify_only ? "Verifying..." : "Erasing...");
+    dump_set(ops, StConnecting,
+             ops->verify_only ? "Verifying..." : "Erasing...");
 
     // Verify-only compares over the file's own span; write covers the chip
     // range (full chip, or the ops range when keeping the bootloader).
@@ -343,8 +320,8 @@ pic_prog_worker (void *ctx)
     if (ops->verify_only)
     {
         FileInfo fi;
-        if (storage_common_stat(ops->storage, ops->write_path, &fi) == FSE_OK
-            && fi.size > 0)
+        if (storage_common_stat(ops->storage, ops->write_path, &fi) == FSE_OK &&
+            fi.size > 0)
         {
             end = (fi.size > (uint64_t)(PIC_CODE_END + 1))
                       ? PIC_CODE_END
@@ -372,7 +349,7 @@ pic_prog_worker (void *ctx)
         .cb_ctx    = NULL, // set below: the callback ctx needs &req
         .cancel    = &ops->cancel,
     };
-    ProgCbCtx cbctx = { .ops = ops, .req = &req };
+    ProgCbCtx cbctx = {.ops = ops, .req = &req};
     req.cb_ctx      = &cbctx;
 
     bool ok    = ops->verify_only ? pic_prog_verify(&req) : pic_prog_run(&req);
@@ -381,8 +358,7 @@ pic_prog_worker (void *ctx)
     AppState *st  = view_get_model(ops->dump_view);
     st->device_id = req.device_id;
     // Mark this as a write/verify result so StDone shows "Done" not "Saved".
-    strncpy(st->stage,
-            ops->verify_only ? "Verify" : "Write",
+    strncpy(st->stage, ops->verify_only ? "Verify" : "Write",
             sizeof(st->stage) - 1);
     st->stage[sizeof(st->stage) - 1] = '\0';
     if (ops->cancel)
@@ -399,9 +375,7 @@ pic_prog_worker (void *ctx)
         }
         else
         {
-            snprintf(st->msg,
-                     sizeof(st->msg),
-                     "Wrong chip %04X",
+            snprintf(st->msg, sizeof(st->msg), "Wrong chip %04X",
                      (unsigned)req.device_id);
         }
     }
@@ -417,33 +391,25 @@ pic_prog_worker (void *ctx)
         st->phase = StError;
         if (req.fail_addr != PIC_PROG_NO_FAIL)
         {
-            snprintf(st->msg,
-                     sizeof(st->msg),
-                     "Verify FAIL @ %06lX",
+            snprintf(st->msg, sizeof(st->msg), "Verify FAIL @ %06lX",
                      (unsigned long)req.fail_addr);
         }
         else
         {
-            snprintf(st->msg,
-                     sizeof(st->msg),
-                     "%s",
+            snprintf(st->msg, sizeof(st->msg), "%s",
                      ops->verify_only ? "Read/SD error" : "Write/SD error");
         }
     }
     else
     {
         st->phase = StDone;
-        snprintf(st->msg,
-                 sizeof(st->msg),
-                 "%s",
+        snprintf(st->msg, sizeof(st->msg), "%s",
                  ops->verify_only ? "Verified OK" : "Flashed + verified OK");
     }
     view_commit_model(ops->dump_view, true);
 
-    FURI_LOG_I(TAG,
-               "%s result: %s (DEVID %04X)",
-               ops->verify_only ? "Verify" : "Write",
-               ok ? "OK" : "FAIL",
+    FURI_LOG_I(TAG, "%s result: %s (DEVID %04X)",
+               ops->verify_only ? "Verify" : "Write", ok ? "OK" : "FAIL",
                (unsigned)req.device_id);
 
     ops->worker_active = false;
@@ -465,7 +431,7 @@ prog_start (PicOps *ops)
     }
     ops->cancel        = false;
     ops->worker_active = true;
-    ops->worker
-        = furi_thread_alloc_ex("PicProgWorker", 4096, pic_prog_worker, ops);
+    ops->worker =
+        furi_thread_alloc_ex("PicProgWorker", 4096, pic_prog_worker, ops);
     furi_thread_start(ops->worker);
 }

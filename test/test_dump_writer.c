@@ -85,13 +85,13 @@ main (void)
     CHECK(strcmp(cap_str(), ":00000001FF\r\n") == 0, "EOF record");
 
     cap_reset();
-    uint8_t ula[2] = { 0x00, 0x01 };
+    uint8_t ula[2] = {0x00, 0x01};
     ihex_record(&g_file, 2, 0x0000, 0x04, ula); // upper addr = 0x0001
     CHECK(strcmp(cap_str(), ":020000040001F9\r\n") == 0,
           "type-04 extended-linear-address record (upper 0x0001)");
 
     cap_reset();
-    uint8_t data4[4] = { 0xDE, 0xAD, 0xBE, 0xEF };
+    uint8_t data4[4] = {0xDE, 0xAD, 0xBE, 0xEF};
     ihex_record(&g_file, 4, 0x0010, 0x00, data4);
     CHECK(strcmp(cap_str(), ":04001000DEADBEEFB4\r\n") == 0,
           "4-byte data record with checksum @ 0x0010");
@@ -107,14 +107,13 @@ main (void)
         }
         cap_reset();
         DumpWriter w;
-        bool       ok = dump_writer_open(&w, NULL, NULL, "d.hex", 0);
-        ok            = dump_writer_append(&w, buf, sizeof(buf)) && ok;
-        ok            = dump_writer_close(&w) && ok;
-        const char *exp
-            = ":020000040000FA\r\n"
-              ":10000000000102030405060708090A0B0C0D0E0F78\r\n"
-              ":0400100010111213A6\r\n"
-              ":00000001FF\r\n";
+        bool       ok   = dump_writer_open(&w, NULL, NULL, "d.hex", 0);
+        ok              = dump_writer_append(&w, buf, sizeof(buf)) && ok;
+        ok              = dump_writer_close(&w) && ok;
+        const char *exp = ":020000040000FA\r\n"
+                          ":10000000000102030405060708090A0B0C0D0E0F78\r\n"
+                          ":0400100010111213A6\r\n"
+                          ":00000001FF\r\n";
         CHECK(ok, "streaming hex writer reports success");
         CHECK(strcmp(cap_str(), exp) == 0,
               "20-byte stream: ULA + 16B record + 4B tail + EOF");
@@ -122,12 +121,12 @@ main (void)
 
     // --- Streaming writer: upper-address change (base 0x10000) ---------------
     {
-        uint8_t buf[4] = { 0xAA, 0xBB, 0xCC, 0xDD };
+        uint8_t buf[4] = {0xAA, 0xBB, 0xCC, 0xDD};
         cap_reset();
         DumpWriter w;
-        bool       ok = dump_writer_open(&w, NULL, NULL, "d.hex", 0x00010000);
-        ok            = dump_writer_append(&w, buf, sizeof(buf)) && ok;
-        ok            = dump_writer_close(&w) && ok;
+        bool       ok   = dump_writer_open(&w, NULL, NULL, "d.hex", 0x00010000);
+        ok              = dump_writer_append(&w, buf, sizeof(buf)) && ok;
+        ok              = dump_writer_close(&w) && ok;
         const char *exp = ":020000040001F9\r\n"
                           ":04000000AABBCCDDEE\r\n"
                           ":00000001FF\r\n";
@@ -137,7 +136,7 @@ main (void)
 
     // --- Raw .bin writer passes bytes through verbatim -----------------------
     {
-        uint8_t buf[3] = { 0x01, 0x02, 0x03 };
+        uint8_t buf[3] = {0x01, 0x02, 0x03};
         cap_reset();
         bool ok = dump_write_bin(NULL, "d.bin", buf, sizeof(buf));
         CHECK(ok && g_cap_len == 3 && tap_mem_eq(g_cap, buf, 3),

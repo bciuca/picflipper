@@ -13,13 +13,13 @@
 #include <string.h>
 
 #define ABOUT_HEADER_H 13 // black title bar height
-#define ABOUT_TEXT_X   3
-#define ABOUT_TEXT_W   118 // wrap width (leaves room for the scrollbar)
-#define ABOUT_LINE_H   10  // baseline step
-#define ABOUT_TOP      20  // first body baseline (below the header)
-#define ABOUT_VISIBLE \
+#define ABOUT_TEXT_X 3
+#define ABOUT_TEXT_W 118 // wrap width (leaves room for the scrollbar)
+#define ABOUT_LINE_H 10  // baseline step
+#define ABOUT_TOP 20     // first body baseline (below the header)
+#define ABOUT_VISIBLE                                                          \
     5 // body lines that fit (20,30,40,50,60 — last clears descenders)
-#define ABOUT_MAX_LINES  64
+#define ABOUT_MAX_LINES 64
 #define ABOUT_LINE_CHARS 44
 
 typedef struct
@@ -33,33 +33,33 @@ struct PicAboutView
     View *view;
 };
 
-static const char ABOUT_BODY[]
-    = "\n"
-      "This is an ICSP programmer for the PIC18F97J60 family of MCUs. I built "
-      "this app "
-      "because I was impatient and too cheap to order a PICkit5 programmer. "
-      "And I wanted "
-      "to see if it was even possible on a Flipper Zero.\n"
-      "\n"
-      "Features:\n"
-      " - Dump full flash binary image\n"
-      " - Dump live RAM\n"
-      " - Write binary image with option to protect boot\n"
-      " - Verify image\n"
-      " - Pin connection check\n"
-      " - ufbt log serial console to monitor in the cli\n"
-      "\n"
-      "Images are stored on the SD card:\n"
-      "/apps_data/picflipper/\n"
-      "  dumps\n"
-      "\n"
-      "Use at your own discretion!\n"
-      "\n"
-      "This app works great for me, but it may not for you.\n"
-      "\n"
-      "Worst case, you brick your device. That would suck.\n"
-      "\n"
-      "bciuca.com/picflipper";
+static const char ABOUT_BODY[] =
+    "\n"
+    "This is an ICSP programmer for the PIC18F97J60 family of MCUs. I built "
+    "this app "
+    "because I was impatient and too cheap to order a PICkit5 programmer. "
+    "And I wanted "
+    "to see if it was even possible on a Flipper Zero.\n"
+    "\n"
+    "Features:\n"
+    " - Dump full flash binary image\n"
+    " - Dump live RAM\n"
+    " - Write binary image with option to protect boot\n"
+    " - Verify image\n"
+    " - Pin connection check\n"
+    " - ufbt log serial console to monitor in the cli\n"
+    "\n"
+    "Images are stored on the SD card:\n"
+    "/apps_data/picflipper/\n"
+    "  dumps\n"
+    "\n"
+    "Use at your own discretion!\n"
+    "\n"
+    "This app works great for me, but it may not for you.\n"
+    "\n"
+    "Worst case, you brick your device. That would suck.\n"
+    "\n"
+    "bciuca.com/picflipper";
 
 static void
 about_emit (char lines[][ABOUT_LINE_CHARS], int *n, const char *s, int len)
@@ -74,11 +74,8 @@ about_emit (char lines[][ABOUT_LINE_CHARS], int *n, const char *s, int len)
 }
 
 static int
-about_wrap (Canvas     *canvas,
-            const char *text,
-            int         maxw,
-            char        lines[][ABOUT_LINE_CHARS],
-            int         max_lines)
+about_wrap (Canvas *canvas, const char *text, int maxw,
+            char lines[][ABOUT_LINE_CHARS], int max_lines)
 {
     const int   cap = ABOUT_LINE_CHARS - 1;
     int         n   = 0;
@@ -183,8 +180,8 @@ about_draw_cb (Canvas *canvas, void *model)
     canvas_set_font(canvas, FontSecondary);
 
     static char lines[ABOUT_MAX_LINES][ABOUT_LINE_CHARS];
-    int         n
-        = about_wrap(canvas, ABOUT_BODY, ABOUT_TEXT_W, lines, ABOUT_MAX_LINES);
+    int         n =
+        about_wrap(canvas, ABOUT_BODY, ABOUT_TEXT_W, lines, ABOUT_MAX_LINES);
     m->nlines     = n;
     int maxscroll = (n > ABOUT_VISIBLE) ? (n - ABOUT_VISIBLE) : 0;
     if (m->scroll > maxscroll)
@@ -207,12 +204,8 @@ about_draw_cb (Canvas *canvas, void *model)
     canvas_draw_box(canvas, 0, 0, 128, ABOUT_HEADER_H);
     canvas_set_color(canvas, ColorWhite);
     canvas_set_font(canvas, FontPrimary);
-    canvas_draw_str_aligned(canvas,
-                            64,
-                            ABOUT_HEADER_H / 2,
-                            AlignCenter,
-                            AlignCenter,
-                            "About PICFlipper");
+    canvas_draw_str_aligned(canvas, 64, ABOUT_HEADER_H / 2, AlignCenter,
+                            AlignCenter, "About PICFlipper");
     canvas_set_color(canvas, ColorBlack);
 
     if (n > ABOUT_VISIBLE)
@@ -234,11 +227,10 @@ about_input_cb (InputEvent *event, void *ctx)
         return false;
     }
     with_view_model(
-        a->view,
-        AboutModel * m,
+        a->view, AboutModel * m,
         {
-            int maxscroll
-                = (m->nlines > ABOUT_VISIBLE) ? (m->nlines - ABOUT_VISIBLE) : 0;
+            int maxscroll =
+                (m->nlines > ABOUT_VISIBLE) ? (m->nlines - ABOUT_VISIBLE) : 0;
             if (event->key == InputKeyDown && m->scroll < maxscroll)
             {
                 m->scroll++;

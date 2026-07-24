@@ -16,10 +16,8 @@ typedef struct PicOps PicOps;
 
 // `view_id` is the id the caller registers get_view() under with the
 // dispatcher; the module switches to it when an op starts.
-PicOps *pic_ops_alloc(Storage        *storage,
-                      DialogsApp     *dialogs,
-                      ViewDispatcher *view_dispatcher,
-                      uint32_t        view_id);
+PicOps *pic_ops_alloc(Storage *storage, DialogsApp *dialogs,
+                      ViewDispatcher *view_dispatcher, uint32_t view_id);
 View   *pic_ops_get_view(PicOps *ops);
 void    pic_ops_free(PicOps *ops);
 

@@ -13,20 +13,20 @@
 #include <string.h>
 #include <stdlib.h>
 
-#define TAG   "PicProg"
+#define TAG "PicProg"
 #define CHUNK 4096U // SD read granularity; multiple of PIC_WRITE_BLOCK
 
 // EECON1 control via core instructions (DS39688D Tables 3-1..3-3, verified).
 #define INST_BSF_WREN 0x84A6 // BSF EECON1, WREN
 #define INST_BSF_FREE 0x88A6 // BSF EECON1, FREE
-#define INST_BSF_WR   0x82A6 // BSF EECON1, WR
+#define INST_BSF_WR 0x82A6   // BSF EECON1, WR
 #define INST_BCF_WREN 0x94A6 // BCF EECON1, WREN
 
 static bool
 is_67j60 (uint16_t id)
 {
-    return (id & 0xFFE0u)
-           == 0x1F20u; // DEVID2:DEVID1 high byte 0x1F, 0b001x_xxxx
+    return (id & 0xFFE0u) ==
+           0x1F20u; // DEVID2:DEVID1 high byte 0x1F, 0b001x_xxxx
 }
 
 // Program-mode entry can be marginal on long/imperfect ICSP wiring: a single
@@ -49,8 +49,8 @@ enter_and_identify (PicProgReq *r)
         pic_icsp_exit(r->d);
         furi_delay_ms(2);
     }
-    FURI_LOG_E(
-        TAG, "DEVID 0x%04X not a 67J60 after retries; abort", r->device_id);
+    FURI_LOG_E(TAG, "DEVID 0x%04X not a 67J60 after retries; abort",
+               r->device_id);
     return false;
 }
 
@@ -72,12 +72,8 @@ pic_prog_bulk_erase (PicIcsp *d)
 }
 
 bool
-pic_prog_row_erase_range (PicIcsp       *d,
-                          uint32_t       start,
-                          uint32_t       end,
-                          ProgProgressCb cb,
-                          void          *ctx,
-                          volatile bool *cancel)
+pic_prog_row_erase_range (PicIcsp *d, uint32_t start, uint32_t end,
+                          ProgProgressCb cb, void *ctx, volatile bool *cancel)
 {
     // DS39688D Table 3-2: WREN once, then per 1024-byte row: FREE, WR, NOP held
     // high P10. TBLPTR may point at any byte in the row to be erased.
@@ -188,12 +184,12 @@ prog_write_file (PicProgReq *r)
                 pic_icsp_set_tblptr(r->d, blk_addr);
                 for (uint32_t w = 0; w < words - 1; w++)
                 { // 31 loads, post-increment
-                    uint16_t word = (uint16_t)blk[2 * w]
-                                    | ((uint16_t)blk[2 * w + 1] << 8);
+                    uint16_t word =
+                        (uint16_t)blk[2 * w] | ((uint16_t)blk[2 * w + 1] << 8);
                     pic_icsp_tblwt_postinc(r->d, word);
                 }
-                uint16_t lastw = (uint16_t)blk[2 * (words - 1)]
-                                 | ((uint16_t)blk[2 * (words - 1) + 1] << 8);
+                uint16_t lastw = (uint16_t)blk[2 * (words - 1)] |
+                                 ((uint16_t)blk[2 * (words - 1) + 1] << 8);
                 pic_icsp_tblwt_start(
                     r->d, lastw); // load last word + start programming
                 pic_icsp_prog_nop(r->d, PIC_P9_US);
@@ -222,12 +218,8 @@ prog_write_file (PicProgReq *r)
                 FURI_LOG_E(TAG,
                            "block @%06lX FAIL byte[%lu] want %02X got %02X | "
                            "rb0=%02X want0=%02X",
-                           (unsigned long)blk_addr,
-                           (unsigned long)bad_i,
-                           blk[bad_i],
-                           got_b,
-                           rb0,
-                           blk[0]);
+                           (unsigned long)blk_addr, (unsigned long)bad_i,
+                           blk[bad_i], got_b, rb0, blk[0]);
                 r->fail_addr = blk_addr;
                 ok           = false;
                 break;
@@ -339,20 +331,20 @@ source_preflight (PicProgReq *r, bool *cp_enable)
 {
     *cp_enable = false;
     File *f    = storage_file_alloc(r->storage);
-    bool  opened
-        = storage_file_open(f, r->bin_path, FSAM_READ, FSOM_OPEN_EXISTING);
+    bool  opened =
+        storage_file_open(f, r->bin_path, FSAM_READ, FSOM_OPEN_EXISTING);
     if (opened)
     {
         if (r->start <= PIC_CONFIG1H_ADDR && r->end >= PIC_CONFIG1H_ADDR)
         {
-            uint8_t b
-                = 0xFF; // EOF / short image => unprogrammed => CP off (safe)
+            uint8_t b =
+                0xFF; // EOF / short image => unprogrammed => CP off (safe)
             if (storage_file_seek(f, PIC_CONFIG1H_ADDR, true))
             {
                 storage_file_read(f, &b, 1);
             }
-            *cp_enable
-                = (b & PIC_CP0_MASK) == 0; // CP0 cleared => code-protected
+            *cp_enable =
+                (b & PIC_CP0_MASK) == 0; // CP0 cleared => code-protected
         }
         storage_file_close(f);
     }
@@ -367,11 +359,11 @@ pic_prog_run (PicProgReq *r)
     {
         return false;
     }
-    if ((r->start % PIC_WRITE_BLOCK)
-        || ((r->end - r->start + 1) % PIC_WRITE_BLOCK))
+    if ((r->start % PIC_WRITE_BLOCK) ||
+        ((r->end - r->start + 1) % PIC_WRITE_BLOCK))
     {
-        FURI_LOG_E(
-            TAG, "range %06lX-%06lX not 64-byte aligned", r->start, r->end);
+        FURI_LOG_E(TAG, "range %06lX-%06lX not 64-byte aligned", r->start,
+                   r->end);
         return false;
     }
     r->fail_addr  = PIC_PROG_NO_FAIL;
@@ -389,8 +381,8 @@ pic_prog_run (PicProgReq *r)
     bool cp_enable = false;
     if (!source_preflight(r, &cp_enable))
     {
-        FURI_LOG_E(
-            TAG, "source unreadable: %s; abort before erase", r->bin_path);
+        FURI_LOG_E(TAG, "source unreadable: %s; abort before erase",
+                   r->bin_path);
         pic_icsp_exit(r->d);
         return false;
     }
@@ -406,8 +398,8 @@ pic_prog_run (PicProgReq *r)
     bool ok;
     if (r->keep_boot)
     {
-        ok = pic_prog_row_erase_range(
-            r->d, r->start, r->end, r->cb, r->cb_ctx, r->cancel);
+        ok = pic_prog_row_erase_range(r->d, r->start, r->end, r->cb, r->cb_ctx,
+                                      r->cancel);
     }
     else
     {
@@ -453,9 +445,7 @@ pic_prog_run (PicProgReq *r)
                 FURI_LOG_W(
                     TAG,
                     "erase attempt %d not clear: CONFIG1H=%02X mem[0]=%02X",
-                    e + 1,
-                    cfg1h,
-                    b0);
+                    e + 1, cfg1h, b0);
             }
         }
         if (r->cb)

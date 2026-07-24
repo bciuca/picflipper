@@ -13,11 +13,8 @@
 #include <string.h>
 
 static inline void
-prog_apply_progress (AppState *st,
-                     ProgStage stage,
-                     uint32_t  done,
-                     uint32_t  total,
-                     uint16_t  device_id)
+prog_apply_progress (AppState *st, ProgStage stage, uint32_t done,
+                     uint32_t total, uint16_t device_id)
 {
     const char *name = (stage == ProgStageErase)   ? "Erasing"
                        : (stage == ProgStageWrite) ? "Writing"

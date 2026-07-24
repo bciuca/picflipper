@@ -34,8 +34,8 @@ ui_draw_wrapped_centered (Canvas *canvas, int y, const char *text)
 }
 
 static void
-ui_progress_bar (
-    Canvas *canvas, uint8_t x, uint8_t y, uint8_t w, uint8_t h, float p)
+ui_progress_bar (Canvas *canvas, uint8_t x, uint8_t y, uint8_t w, uint8_t h,
+                 float p)
 {
     if (p < 0.0f)
     {
@@ -58,11 +58,7 @@ app_ui_draw (Canvas *canvas, const AppState *st)
 {
     canvas_clear(canvas);
     canvas_set_font(canvas, FontPrimary);
-    canvas_draw_str_aligned(canvas,
-                            64,
-                            8,
-                            AlignCenter,
-                            AlignCenter,
+    canvas_draw_str_aligned(canvas, 64, 8, AlignCenter, AlignCenter,
                             st->title[0] ? st->title : "PICFlipper");
     canvas_set_font(canvas, FontSecondary);
 
@@ -74,30 +70,27 @@ app_ui_draw (Canvas *canvas, const AppState *st)
             // does NOT probe on entry (that would reset the target). Trigger
             // whatever you want to capture on the target, then OK enters ICSP +
             // captures.
-            canvas_draw_str_aligned(
-                canvas, 64, 26, AlignCenter, AlignCenter, "Live RAM snapshot");
-            canvas_draw_str_aligned(canvas,
-                                    64,
-                                    38,
-                                    AlignCenter,
-                                    AlignCenter,
+            canvas_draw_str_aligned(canvas, 64, 26, AlignCenter, AlignCenter,
+                                    "Live RAM snapshot");
+            canvas_draw_str_aligned(canvas, 64, 38, AlignCenter, AlignCenter,
                                     "Trigger target, then:");
             elements_button_center(canvas, "Snapshot");
             break;
-        case StSearching: {
+        case StSearching:
+        {
             // Spinner: 8 dots on a ring, a filled head + short trailing tail
             // that rotates with st->spin. The probe is near-instant, so this
             // mostly reads as "scanning" and keeps animating while we
             // auto-retry a missing chip.
-            static const int8_t ox[8] = { 12, 8, 0, -8, -12, -8, 0, 8 };
-            static const int8_t oy[8] = { 0, 8, 12, 8, 0, -8, -12, -8 };
+            static const int8_t ox[8] = {12, 8, 0, -8, -12, -8, 0, 8};
+            static const int8_t oy[8] = {0, 8, 12, 8, 0, -8, -12, -8};
             const int           cx = 64, cy = 32;
             int                 head = st->spin % 8;
             for (int k = 0; k < 8; k++)
             {
                 int x = cx + ox[k], y = cy + oy[k];
-                int back
-                    = (head - k + 8) % 8; // 0 = head, 1 = one step behind, ...
+                int back =
+                    (head - k + 8) % 8; // 0 = head, 1 = one step behind, ...
                 if (back == 0)
                 {
                     canvas_draw_disc(canvas, x, y, 2);
@@ -111,50 +104,42 @@ app_ui_draw (Canvas *canvas, const AppState *st)
                     canvas_draw_dot(canvas, x, y);
                 }
             }
-            canvas_draw_str_aligned(canvas,
-                                    64,
-                                    54,
-                                    AlignCenter,
-                                    AlignCenter,
+            canvas_draw_str_aligned(canvas, 64, 54, AlignCenter, AlignCenter,
                                     "Searching for PIC...");
             break;
         }
         case StFound:
-            snprintf(line,
-                     sizeof(line),
-                     "PIC18F67J60  ID:%04X",
+            snprintf(line, sizeof(line), "PIC18F67J60  ID:%04X",
                      (unsigned int)st->device_id);
-            canvas_draw_str_aligned(
-                canvas, 64, 26, AlignCenter, AlignCenter, line);
-            canvas_draw_str_aligned(
-                canvas, 64, 38, AlignCenter, AlignCenter, "Chip detected");
+            canvas_draw_str_aligned(canvas, 64, 26, AlignCenter, AlignCenter,
+                                    line);
+            canvas_draw_str_aligned(canvas, 64, 38, AlignCenter, AlignCenter,
+                                    "Chip detected");
             elements_button_center(canvas, "Dump");
             break;
         case StConnecting:
-            canvas_draw_str_aligned(
-                canvas, 64, 36, AlignCenter, AlignCenter, "Connecting...");
+            canvas_draw_str_aligned(canvas, 64, 36, AlignCenter, AlignCenter,
+                                    "Connecting...");
             break;
-        case StDumping: {
+        case StDumping:
+        {
             float p = st->bytes_total
                           ? (float)st->bytes_done / (float)st->bytes_total
                           : 0.0f;
             ui_progress_bar(canvas, 8, 24, 112, 9, p);
-            snprintf(line,
-                     sizeof(line),
-                     "%lu / %lu B",
+            snprintf(line, sizeof(line), "%lu / %lu B",
                      (unsigned long)st->bytes_done,
                      (unsigned long)st->bytes_total);
-            canvas_draw_str_aligned(
-                canvas, 64, 44, AlignCenter, AlignCenter, line);
-            snprintf(line,
-                     sizeof(line),
-                     "Device ID: %04X",
+            canvas_draw_str_aligned(canvas, 64, 44, AlignCenter, AlignCenter,
+                                    line);
+            snprintf(line, sizeof(line), "Device ID: %04X",
                      (unsigned int)st->device_id);
-            canvas_draw_str_aligned(
-                canvas, 64, 56, AlignCenter, AlignCenter, line);
+            canvas_draw_str_aligned(canvas, 64, 56, AlignCenter, AlignCenter,
+                                    line);
             break;
         }
-        case StConfirm: {
+        case StConfirm:
+        {
             // Confirm screen for both write and verify: file name + SHA of the
             // image. Write is destructive (hold-to-erase); verify is read-only
             // (single OK). The subtitle names each variant's scope; stage is
@@ -166,11 +151,11 @@ app_ui_draw (Canvas *canvas, const AppState *st)
                                        : "App data + Boot";
             if (subtitle)
             {
-                canvas_draw_str_aligned(
-                    canvas, 64, 18, AlignCenter, AlignCenter, subtitle);
+                canvas_draw_str_aligned(canvas, 64, 18, AlignCenter,
+                                        AlignCenter, subtitle);
             }
-            canvas_draw_str_aligned(
-                canvas, 64, 28, AlignCenter, AlignCenter, st->msg);
+            canvas_draw_str_aligned(canvas, 64, 28, AlignCenter, AlignCenter,
+                                    st->msg);
             // First 16 hex (64 bits) of sha256sum to eyeball-verify
             if (strlen(st->sha) == 64)
             {
@@ -178,11 +163,11 @@ app_ui_draw (Canvas *canvas, const AppState *st)
             }
             else
             {
-                snprintf(
-                    line, sizeof(line), "%.*s", (int)sizeof(line) - 1, st->sha);
+                snprintf(line, sizeof(line), "%.*s", (int)sizeof(line) - 1,
+                         st->sha);
             }
-            canvas_draw_str_aligned(
-                canvas, 64, 38, AlignCenter, AlignCenter, line);
+            canvas_draw_str_aligned(canvas, 64, 38, AlignCenter, AlignCenter,
+                                    line);
             if (verify)
             {
                 // Read-only compare against the file: one OK, no erase warning.
@@ -202,46 +187,38 @@ app_ui_draw (Canvas *canvas, const AppState *st)
                     secs = 5;
                 }
                 snprintf(line, sizeof(line), "Erases chip! Hold OK %ds", secs);
-                canvas_draw_str_aligned(
-                    canvas, 64, 47, AlignCenter, AlignCenter, line);
+                canvas_draw_str_aligned(canvas, 64, 47, AlignCenter,
+                                        AlignCenter, line);
                 // Fills over the 5s hold, releasing early resets to empty.
                 elements_progress_bar(canvas, 14, 53, 100, st->hold);
             }
             break;
         }
-        case StWriting: {
+        case StWriting:
+        {
             float p = st->bytes_total
                           ? (float)st->bytes_done / (float)st->bytes_total
                           : 0.0f;
             ui_progress_bar(canvas, 8, 24, 112, 9, p);
-            snprintf(line,
-                     sizeof(line),
-                     "%s %lu/%lu",
-                     st->stage,
+            snprintf(line, sizeof(line), "%s %lu/%lu", st->stage,
                      (unsigned long)st->bytes_done,
                      (unsigned long)st->bytes_total);
-            canvas_draw_str_aligned(
-                canvas, 64, 44, AlignCenter, AlignCenter, line);
-            snprintf(line,
-                     sizeof(line),
-                     "Device ID: %04X",
+            canvas_draw_str_aligned(canvas, 64, 44, AlignCenter, AlignCenter,
+                                    line);
+            snprintf(line, sizeof(line), "Device ID: %04X",
                      (unsigned int)st->device_id);
-            canvas_draw_str_aligned(
-                canvas, 64, 56, AlignCenter, AlignCenter, line);
+            canvas_draw_str_aligned(canvas, 64, 56, AlignCenter, AlignCenter,
+                                    line);
             break;
         }
         case StDone:
-            canvas_draw_str_aligned(canvas,
-                                    64,
-                                    24,
-                                    AlignCenter,
-                                    AlignCenter,
+            canvas_draw_str_aligned(canvas, 64, 24, AlignCenter, AlignCenter,
                                     st->stage[0] ? "Done" : "Saved");
             ui_draw_wrapped_centered(canvas, 40, st->msg);
             break;
         case StError:
-            canvas_draw_str_aligned(
-                canvas, 64, 24, AlignCenter, AlignCenter, "Error");
+            canvas_draw_str_aligned(canvas, 64, 24, AlignCenter, AlignCenter,
+                                    "Error");
             ui_draw_wrapped_centered(canvas, 40, st->msg);
             break;
     }

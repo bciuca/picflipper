@@ -9,26 +9,23 @@
 static int tap_run    = 0;
 static int tap_failed = 0;
 
-#define CHECK(cond, ...)                              \
-    do                                                \
-    {                                                 \
-        tap_run++;                                    \
-        if (cond)                                     \
-        {                                             \
-            printf("ok %d - ", tap_run);              \
-            printf(__VA_ARGS__);                      \
-            printf("\n");                             \
-        }                                             \
-        else                                          \
-        {                                             \
-            tap_failed++;                             \
-            printf("not ok %d - ", tap_run);          \
-            printf(__VA_ARGS__);                      \
-            printf("\n    at %s:%d  expr: %s\n",       \
-                   __FILE__,                          \
-                   __LINE__,                          \
-                   #cond);                            \
-        }                                             \
+#define CHECK(cond, ...)                                                       \
+    do                                                                         \
+    {                                                                          \
+        tap_run++;                                                             \
+        if (cond)                                                              \
+        {                                                                      \
+            printf("ok %d - ", tap_run);                                       \
+            printf(__VA_ARGS__);                                               \
+            printf("\n");                                                      \
+        }                                                                      \
+        else                                                                   \
+        {                                                                      \
+            tap_failed++;                                                      \
+            printf("not ok %d - ", tap_run);                                   \
+            printf(__VA_ARGS__);                                               \
+            printf("\n    at %s:%d  expr: %s\n", __FILE__, __LINE__, #cond);   \
+        }                                                                      \
     } while (0)
 
 // Compare two byte buffers; on mismatch report the first differing offset.
@@ -41,9 +38,7 @@ tap_mem_eq (const void *a, const void *b, size_t n)
     {
         if (pa[i] != pb[i])
         {
-            printf("    first diff at byte %zu: %02X != %02X\n",
-                   i,
-                   pa[i],
+            printf("    first diff at byte %zu: %02X != %02X\n", i, pa[i],
                    pb[i]);
             return 0;
         }
@@ -54,9 +49,6 @@ tap_mem_eq (const void *a, const void *b, size_t n)
 static inline int
 tap_done (const char *suite)
 {
-    printf("# %s: %d checks, %d failed\n",
-           suite,
-           tap_run,
-           tap_failed);
+    printf("# %s: %d checks, %d failed\n", suite, tap_run, tap_failed);
     return tap_failed ? 1 : 0;
 }

@@ -10,13 +10,9 @@
 // --- Single-shot writers: buffer the whole image and write it in one call.
 // For dumps small enough to hold in heap (the ~4 KB RAM snapshot). Thin
 // wrappers over the streaming writer below, so there is one Intel-HEX impl.
-bool dump_write_bin(Storage       *s,
-                    const char    *path,
-                    const uint8_t *buf,
-                    size_t         len);
-bool dump_write_ihex(Storage       *s,
-                     const char    *path,
-                     uint32_t       base,
+bool dump_write_bin(Storage *s, const char *path, const uint8_t *buf,
+                    size_t len);
+bool dump_write_ihex(Storage *s, const char *path, uint32_t base,
                      const uint8_t *buf,
                      size_t         len); // Intel HEX, type-04 ext addr
 
@@ -38,11 +34,8 @@ typedef struct
     bool     ok;
 } DumpWriter;
 
-bool dump_writer_open(DumpWriter *w,
-                      Storage    *s,
-                      const char *bin_path,
-                      const char *hex_path,
-                      uint32_t    base);
+bool dump_writer_open(DumpWriter *w, Storage *s, const char *bin_path,
+                      const char *hex_path, uint32_t base);
 bool dump_writer_append(DumpWriter *w, const uint8_t *data, size_t len);
-bool dump_writer_close(
-    DumpWriter *w); // finalizes hex EOF, closes files, returns ok
+bool
+dump_writer_close(DumpWriter *w); // finalizes hex EOF, closes files, returns ok

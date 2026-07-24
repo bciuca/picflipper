@@ -25,10 +25,8 @@ typedef enum
 } FS_OpenMode;
 
 File  *storage_file_alloc(Storage *s);
-bool   storage_file_open(File          *f,
-                         const char    *path,
-                         FS_AccessMode  am,
-                         FS_OpenMode    om);
+bool   storage_file_open(File *f, const char *path, FS_AccessMode am,
+                         FS_OpenMode om);
 size_t storage_file_write(File *f, const void *buf, size_t n);
 bool   storage_file_close(File *f);
 void   storage_file_free(File *f);

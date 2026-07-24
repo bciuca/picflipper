@@ -25,8 +25,9 @@ uint8_t pic_icsp_read_data(PicIcsp *d,
 // --- Write side (DS39688D §3, Table 2-3) ------------------------------------
 void pic_icsp_tblwt(PicIcsp *d,
                     uint16_t word); // cmd 1100: Table Write (no inc)
-void pic_icsp_tblwt_postinc(
-    PicIcsp *d, uint16_t word); // cmd 1101: Table Write, TBLPTR += 2
+void
+pic_icsp_tblwt_postinc(PicIcsp *d,
+                       uint16_t word); // cmd 1101: Table Write, TBLPTR += 2
 void pic_icsp_tblwt_start(
     PicIcsp *d, uint16_t word); // cmd 1111: Table Write + Start Programming
 // NOP whose 4th command-clock high phase is stretched to `hold_us` (4th PGC

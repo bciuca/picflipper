@@ -11,11 +11,11 @@
 #include <stdio.h>
 
 #define TAG "picflipper"
-#define TAG_PIC \
+#define TAG_PIC                                                                \
     "PIC-UART" // forwarded target-PIC debug bytes show under this tag
 #define RX_STREAM_SIZE 512
 
-static const uint32_t baud_list[] = { 9600, 19200, 38400, 57600, 115200 };
+static const uint32_t baud_list[] = {9600, 19200, 38400, 57600, 115200};
 #define BAUD_N (sizeof(baud_list) / sizeof(baud_list[0]))
 
 typedef struct
@@ -59,8 +59,8 @@ console_drain (void *ctx)
     uint8_t         buf[64];
     while (c->drain_run)
     {
-        size_t n
-            = furi_stream_buffer_receive(c->rx_stream, buf, sizeof(buf), 100);
+        size_t n =
+            furi_stream_buffer_receive(c->rx_stream, buf, sizeof(buf), 100);
         if (n == 0)
         {
             // idle: flush any partial line so short bursts without a newline
@@ -164,8 +164,8 @@ console_draw_cb (Canvas *canvas, void *model)
     ConsoleModel *m = model;
     canvas_clear(canvas);
     canvas_set_font(canvas, FontPrimary);
-    canvas_draw_str_aligned(
-        canvas, 64, 8, AlignCenter, AlignCenter, "PIC Serial Monitor");
+    canvas_draw_str_aligned(canvas, 64, 8, AlignCenter, AlignCenter,
+                            "PIC Serial Monitor");
     canvas_set_font(canvas, FontSecondary);
     // What it does: passively read the target PIC's own debug UART (its printf
     // output) on the Flipper RX pin and forward each line to the Flipper log,
@@ -187,10 +187,7 @@ console_draw_cb (Canvas *canvas, void *model)
     elements_button_left(canvas, "");
     elements_button_right(canvas, "");
     char line[32];
-    snprintf(line,
-             sizeof(line),
-             "%lu  RX %luB",
-             (unsigned long)m->baud,
+    snprintf(line, sizeof(line), "%lu  RX %luB", (unsigned long)m->baud,
              (unsigned long)m->rx_bytes);
     canvas_draw_str_aligned(canvas, 64, 58, AlignCenter, AlignCenter, line);
 }
@@ -205,10 +202,10 @@ console_input_cb (InputEvent *event, void *ctx)
     }
     if (event->key == InputKeyLeft || event->key == InputKeyRight)
     {
-        c->baud_idx
-            = (uint8_t)((c->baud_idx
-                         + (event->key == InputKeyRight ? 1 : BAUD_N - 1))
-                        % BAUD_N);
+        c->baud_idx =
+            (uint8_t)((c->baud_idx +
+                       (event->key == InputKeyRight ? 1 : BAUD_N - 1)) %
+                      BAUD_N);
         // restart serial at the new baud (keep the drain thread + stream)
         if (c->serial)
         {
@@ -216,12 +213,10 @@ console_input_cb (InputEvent *event, void *ctx)
             furi_hal_serial_init(c->serial, baud_list[c->baud_idx]);
             furi_hal_serial_async_rx_start(c->serial, console_rx_irq, c, false);
         }
-        FURI_LOG_I(
-            TAG, "Console baud -> %lu", (unsigned long)baud_list[c->baud_idx]);
+        FURI_LOG_I(TAG, "Console baud -> %lu",
+                   (unsigned long)baud_list[c->baud_idx]);
         with_view_model(
-            c->view,
-            ConsoleModel * m,
-            { m->baud = baud_list[c->baud_idx]; },
+            c->view, ConsoleModel * m, { m->baud = baud_list[c->baud_idx]; },
             true);
         return true;
     }
@@ -235,8 +230,7 @@ console_enter_cb (void *ctx)
     c->rx_bytes       = 0;
     console_start(c);
     with_view_model(
-        c->view,
-        ConsoleModel * m,
+        c->view, ConsoleModel * m,
         {
             m->active   = true;
             m->baud     = baud_list[c->baud_idx];

@@ -33,29 +33,27 @@ main (void)
 
     // --- Wrap at word boundaries --------------------------------------------
     n = wrap("hello world foo", 60, lines);
-    CHECK(n == 2 && strcmp(lines[0], "hello") == 0
-              && strcmp(lines[1], "world foo") == 0,
+    CHECK(n == 2 && strcmp(lines[0], "hello") == 0 &&
+              strcmp(lines[1], "world foo") == 0,
           "wraps at word boundary (10-char lines)");
 
     // --- Honor '\n', including a preserved blank line ------------------------
     n = wrap("a\n\nb", 600, lines);
-    CHECK(n == 3 && strcmp(lines[0], "a") == 0 && strcmp(lines[1], "") == 0
-              && strcmp(lines[2], "b") == 0,
+    CHECK(n == 3 && strcmp(lines[0], "a") == 0 && strcmp(lines[1], "") == 0 &&
+              strcmp(lines[2], "b") == 0,
           "explicit newlines split lines; blank line preserved");
 
     // --- Preserved leading indent on the first line -------------------------
     n = wrap(" - Dump full flash binary image", 60, lines);
-    CHECK(n == 4 && strcmp(lines[0], " - Dump") == 0
-              && strcmp(lines[1], "full flash") == 0
-              && strcmp(lines[2], "binary") == 0
-              && strcmp(lines[3], "image") == 0,
+    CHECK(n == 4 && strcmp(lines[0], " - Dump") == 0 &&
+              strcmp(lines[1], "full flash") == 0 &&
+              strcmp(lines[2], "binary") == 0 && strcmp(lines[3], "image") == 0,
           "leading indent kept on first wrapped line");
 
     // --- Hard-break of an over-long token (URL, no spaces) ------------------
     n = wrap("bciuca.com/picflipper", 60, lines);
-    CHECK(n == 3 && strcmp(lines[0], "bciuca.com") == 0
-              && strcmp(lines[1], "/picflippe") == 0
-              && strcmp(lines[2], "r") == 0,
+    CHECK(n == 3 && strcmp(lines[0], "bciuca.com") == 0 &&
+              strcmp(lines[1], "/picflippe") == 0 && strcmp(lines[2], "r") == 0,
           "over-long token hard-breaks at the width limit");
 
     // --- about_emit truncates an over-length source at ABOUT_LINE_CHARS-1 ---
@@ -65,8 +63,8 @@ main (void)
         memset(src, 'x', sizeof(src) - 1);
         src[sizeof(src) - 1] = '\0';
         about_emit(lines, &m, src, (int)strlen(src));
-        CHECK(m == 1 && (int)strlen(lines[0]) == ABOUT_LINE_CHARS - 1
-                  && lines[0][ABOUT_LINE_CHARS - 1] == '\0',
+        CHECK(m == 1 && (int)strlen(lines[0]) == ABOUT_LINE_CHARS - 1 &&
+                  lines[0][ABOUT_LINE_CHARS - 1] == '\0',
               "about_emit clamps a too-long line to ABOUT_LINE_CHARS-1");
     }
 

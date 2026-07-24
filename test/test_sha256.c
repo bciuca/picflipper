@@ -38,23 +38,20 @@ main (void)
 
     // FIPS 180-4 / NIST CAVP known-answer vectors.
     digest("", 0, d);
-    CHECK(eq32(d,
-               "e3b0c44298fc1c149afbf4c8996fb924"
-               "27ae41e4649b934ca495991b7852b855"),
+    CHECK(eq32(d, "e3b0c44298fc1c149afbf4c8996fb924"
+                  "27ae41e4649b934ca495991b7852b855"),
           "empty string");
 
     digest("abc", 3, d);
-    CHECK(eq32(d,
-               "ba7816bf8f01cfea414140de5dae2223"
-               "b00361a396177a9cb410ff61f20015ad"),
+    CHECK(eq32(d, "ba7816bf8f01cfea414140de5dae2223"
+                  "b00361a396177a9cb410ff61f20015ad"),
           "\"abc\"");
 
     // 56-byte message -> exercises the two-block final padding path.
     const char *m2 = "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq";
     digest(m2, strlen(m2), d);
-    CHECK(eq32(d,
-               "248d6a61d20638b8e5c026930c3e6039"
-               "a33ce45964ff2167f6ecedd419db06c1"),
+    CHECK(eq32(d, "248d6a61d20638b8e5c026930c3e6039"
+                  "a33ce45964ff2167f6ecedd419db06c1"),
           "56-byte two-block message");
 
     // Streaming equivalence: byte-at-a-time update must equal one-shot.
@@ -68,9 +65,8 @@ main (void)
         }
         uint8_t ds[32];
         sha256_final(&c, ds);
-        CHECK(eq32(ds,
-                   "ba7816bf8f01cfea414140de5dae2223"
-                   "b00361a396177a9cb410ff61f20015ad"),
+        CHECK(eq32(ds, "ba7816bf8f01cfea414140de5dae2223"
+                       "b00361a396177a9cb410ff61f20015ad"),
               "\"abc\" fed one byte at a time == one-shot");
     }
 
@@ -85,9 +81,8 @@ main (void)
             sha256_update(&c, block, sizeof(block));
         }
         sha256_final(&c, d);
-        CHECK(eq32(d,
-                   "cdc76e5c9914fb9281a1c7e284d73e67"
-                   "f1809a48a497200e046d39ccc7112cd0"),
+        CHECK(eq32(d, "cdc76e5c9914fb9281a1c7e284d73e67"
+                      "f1809a48a497200e046d39ccc7112cd0"),
               "one million 'a'");
     }
 

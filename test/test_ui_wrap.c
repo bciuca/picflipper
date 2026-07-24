@@ -38,8 +38,7 @@ main (void)
     // The actual offending filename. maxw=120 => 20 chars per line at 6 px.
     {
         const char *fn = "pic_1F23_2026-07-12_16-38-02.bin"; // 32 chars
-        int         n  = ui_wrap_hard(fn, 120, measure6, NULL, lines,
-                                      UI_WRAP_MAX_LINES);
+        int n = ui_wrap_hard(fn, 120, measure6, NULL, lines, UI_WRAP_MAX_LINES);
         CHECK(n == 2, "32-char filename wraps onto 2 lines");
         CHECK(strcmp(lines[0], "pic_1F23_2026-07-12_") == 0,
               "line 1 packs the max chars that fit");
@@ -70,10 +69,10 @@ main (void)
     // Guaranteed progress: a maxw narrower than one glyph still terminates,
     // emitting one char per line (no infinite loop / no dropped chars).
     {
-        int n = ui_wrap_hard("abc", 1, measure6, NULL, lines,
-                             UI_WRAP_MAX_LINES);
-        CHECK(n == 3 && strcmp(lines[0], "a") == 0 && strcmp(lines[1], "b") == 0
-                  && strcmp(lines[2], "c") == 0,
+        int n =
+            ui_wrap_hard("abc", 1, measure6, NULL, lines, UI_WRAP_MAX_LINES);
+        CHECK(n == 3 && strcmp(lines[0], "a") == 0 &&
+                  strcmp(lines[1], "b") == 0 && strcmp(lines[2], "c") == 0,
               "glyph wider than maxw still advances one char per line");
     }
 

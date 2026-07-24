@@ -12,7 +12,7 @@
 #include <furi_hal_gpio.h>
 #include <furi_hal_resources.h>
 
-#define PIC_ENTRY_KEY \
+#define PIC_ENTRY_KEY                                                          \
     0x4D434850UL // DS39688D Fig 2-7, "MCHP", shifted MSb first
 
 // One PGC clock pulse while PGD already holds the bit to be latched.
@@ -30,12 +30,12 @@ pic_clock_bit (PicIcsp *d, bool bit)
 void
 pic_icsp_init (PicIcsp *d)
 {
-    furi_hal_gpio_init(
-        d->pgc, GpioModeOutputPushPull, GpioPullNo, GpioSpeedLow);
-    furi_hal_gpio_init(
-        d->pgd, GpioModeOutputPushPull, GpioPullNo, GpioSpeedLow);
-    furi_hal_gpio_init(
-        d->mclr, GpioModeOutputPushPull, GpioPullNo, GpioSpeedLow);
+    furi_hal_gpio_init(d->pgc, GpioModeOutputPushPull, GpioPullNo,
+                       GpioSpeedLow);
+    furi_hal_gpio_init(d->pgd, GpioModeOutputPushPull, GpioPullNo,
+                       GpioSpeedLow);
+    furi_hal_gpio_init(d->mclr, GpioModeOutputPushPull, GpioPullNo,
+                       GpioSpeedLow);
     furi_hal_gpio_write(d->pgc, false);
     furi_hal_gpio_write(d->pgd, false);
     furi_hal_gpio_write(d->mclr, false);
@@ -154,8 +154,8 @@ pic_icsp_table_read (PicIcsp *d)
     }
 
     // Restore PGD to a driven idle-low output for the next command.
-    furi_hal_gpio_init(
-        d->pgd, GpioModeOutputPushPull, GpioPullNo, GpioSpeedLow);
+    furi_hal_gpio_init(d->pgd, GpioModeOutputPushPull, GpioPullNo,
+                       GpioSpeedLow);
     furi_hal_gpio_write(d->pgd, false);
     return value;
 }
@@ -194,8 +194,8 @@ pic_icsp_shift_out_tablat (PicIcsp *d)
         furi_delay_us(PIC_T_HOLD_US);
     }
 
-    furi_hal_gpio_init(
-        d->pgd, GpioModeOutputPushPull, GpioPullNo, GpioSpeedLow);
+    furi_hal_gpio_init(d->pgd, GpioModeOutputPushPull, GpioPullNo,
+                       GpioSpeedLow);
     furi_hal_gpio_write(d->pgd, false);
     return value;
 }

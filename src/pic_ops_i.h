@@ -15,12 +15,12 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#define TAG            "picflipper"
+#define TAG "picflipper"
 #define PIC_CODE_START 0x000000UL
-#define PIC_CODE_END   0x01FFFFUL // inclusive; 128 KB
-#define PIC_RAM_START  0x0000UL
-#define PIC_RAM_END    0x0F5FUL // GPR file-register space (below SFRs @0xF60)
-#define DUMP_CHUNK     4096
+#define PIC_CODE_END 0x01FFFFUL // inclusive; 128 KB
+#define PIC_RAM_START 0x0000UL
+#define PIC_RAM_END 0x0F5FUL // GPR file-register space (below SFRs @0xF60)
+#define DUMP_CHUNK 4096
 
 typedef enum
 {

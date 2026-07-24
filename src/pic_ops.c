@@ -53,8 +53,7 @@ static int32_t
 pic_search_worker (void *ctx)
 {
     PicOps *ops = ctx;
-    PicIcsp d
-        = { .pgc = PIC_PIN_PGC, .pgd = PIC_PIN_PGD, .mclr = PIC_PIN_MCLR };
+    PicIcsp d = {.pgc = PIC_PIN_PGC, .pgd = PIC_PIN_PGD, .mclr = PIC_PIN_MCLR};
     pic_icsp_init(&d);
     while (!ops->cancel)
     {
@@ -63,8 +62,7 @@ pic_search_worker (void *ctx)
         pic_icsp_exit(&d);
         if ((devid & 0xFFE0) == 0x1F20)
         {
-            FURI_LOG_I(TAG,
-                       "Search: found PIC18F67J60 (DEVID 0x%04X)",
+            FURI_LOG_I(TAG, "Search: found PIC18F67J60 (DEVID 0x%04X)",
                        (unsigned)devid);
             // Clear worker_active before publishing StFound so a fast OK isn't
             // rejected by the dump_start busy-guard.
@@ -110,8 +108,8 @@ enter_search (PicOps *ops)
     }
     view_dispatcher_switch_to_view(ops->view_dispatcher, ops->view_id);
     ops->worker_active = true;
-    ops->worker
-        = furi_thread_alloc_ex("PicSearchWorker", 4096, pic_search_worker, ops);
+    ops->worker =
+        furi_thread_alloc_ex("PicSearchWorker", 4096, pic_search_worker, ops);
     furi_thread_start(ops->worker);
     furi_timer_start(ops->anim_timer, furi_ms_to_ticks(120));
 }
@@ -166,14 +164,9 @@ enter_confirm (PicOps *ops)
         memset(st, 0, sizeof(*st));
         snprintf(st->title, sizeof(st->title), "%s", op_title(ops->op));
         const char *base = strrchr(ops->write_path, '/');
-        snprintf(st->msg,
-                 sizeof(st->msg),
-                 "%.*s",
-                 (int)sizeof(st->msg) - 1,
+        snprintf(st->msg, sizeof(st->msg), "%.*s", (int)sizeof(st->msg) - 1,
                  base ? base + 1 : ops->write_path);
-        snprintf(st->stage,
-                 sizeof(st->stage),
-                 "%s",
+        snprintf(st->stage, sizeof(st->stage), "%s",
                  ops->verify_only ? "Verify"
                  : ops->keep_boot ? "App+boot"
                                   : "Full");
@@ -194,8 +187,7 @@ anim_timer_cb (void *ctx)
     PicOps *ops  = ctx;
     bool    keep = false, fire_write = false;
     with_view_model(
-        ops->dump_view,
-        AppState * st,
+        ops->dump_view, AppState * st,
         {
             if (st->phase == StSearching)
             {
@@ -246,8 +238,8 @@ dump_input_cb (InputEvent *event, void *ctx)
 
     if (event->type == InputTypeShort && event->key == InputKeyBack)
     {
-        ops->holding
-            = false; // dropping the confirm gate cancels any in-progress hold
+        ops->holding =
+            false; // dropping the confirm gate cancels any in-progress hold
         if (phase == StSearching)
         {
             // Cancel the probe loop and drop the phase so the spinner timer
@@ -300,30 +292,30 @@ dump_input_cb (InputEvent *event, void *ctx)
     }
 
     // RAM ready prompt (no detection probe — see enter_ram_ready): OK captures.
-    if (phase == StIdle && event->type == InputTypeShort
-        && event->key == InputKeyOk)
+    if (phase == StIdle && event->type == InputTypeShort &&
+        event->key == InputKeyOk)
     {
         dump_start(ops);
         return true;
     }
     // Chip detected (flash dump only): OK starts the dump.
-    if (phase == StFound && event->type == InputTypeShort
-        && event->key == InputKeyOk)
+    if (phase == StFound && event->type == InputTypeShort &&
+        event->key == InputKeyOk)
     {
         dump_start(ops);
         return true;
     }
     // After a result, OK re-runs: RAM back to its ready prompt (no probe),
     // everything else from the detection gate.
-    if ((phase == StDone || phase == StError) && event->type == InputTypeShort
-        && event->key == InputKeyOk)
+    if ((phase == StDone || phase == StError) &&
+        event->type == InputTypeShort && event->key == InputKeyOk)
     {
         if (ops->op == OpDumpRam)
         {
             enter_ram_ready(ops); // ready prompt, no probe
         }
-        else if (ops->op == OpVerify || ops->op == OpWriteFull
-                 || ops->op == OpWriteApp)
+        else if (ops->op == OpVerify || ops->op == OpWriteFull ||
+                 ops->op == OpWriteApp)
         {
             enter_confirm(ops); // back to the file name + SHA confirm, no probe
         }
@@ -363,8 +355,8 @@ pic_ops_start_write (PicOps *ops, bool keep_boot)
     {
         return;
     }
-    if (!dump_store_pick_bin(
-            ops->dialogs, ops->write_path, sizeof(ops->write_path)))
+    if (!dump_store_pick_bin(ops->dialogs, ops->write_path,
+                             sizeof(ops->write_path)))
     {
         return;
     }
@@ -372,11 +364,11 @@ pic_ops_start_write (PicOps *ops, bool keep_boot)
     ops->keep_boot   = keep_boot;
     ops->verify_only = false;
     // Hash the image up front so the confirm gate can show it before erasing.
-    if (!dump_store_hash_sha256(
-            ops->storage, ops->write_path, ops->confirm_sha))
+    if (!dump_store_hash_sha256(ops->storage, ops->write_path,
+                                ops->confirm_sha))
     {
-        strncpy(
-            ops->confirm_sha, "hash unavailable", sizeof(ops->confirm_sha) - 1);
+        strncpy(ops->confirm_sha, "hash unavailable",
+                sizeof(ops->confirm_sha) - 1);
         ops->confirm_sha[sizeof(ops->confirm_sha) - 1] = '\0';
     }
     enter_confirm(ops); // hold-to-write gate (no probe; the write worker checks
@@ -390,8 +382,8 @@ pic_ops_start_verify (PicOps *ops)
     {
         return;
     }
-    if (!dump_store_pick_bin(
-            ops->dialogs, ops->write_path, sizeof(ops->write_path)))
+    if (!dump_store_pick_bin(ops->dialogs, ops->write_path,
+                             sizeof(ops->write_path)))
     {
         return;
     }
@@ -399,21 +391,19 @@ pic_ops_start_verify (PicOps *ops)
     ops->keep_boot   = false;
     ops->verify_only = true;
     // Hash the image so the confirm screen shows the file name + SHA to check.
-    if (!dump_store_hash_sha256(
-            ops->storage, ops->write_path, ops->confirm_sha))
+    if (!dump_store_hash_sha256(ops->storage, ops->write_path,
+                                ops->confirm_sha))
     {
-        strncpy(
-            ops->confirm_sha, "hash unavailable", sizeof(ops->confirm_sha) - 1);
+        strncpy(ops->confirm_sha, "hash unavailable",
+                sizeof(ops->confirm_sha) - 1);
         ops->confirm_sha[sizeof(ops->confirm_sha) - 1] = '\0';
     }
     enter_confirm(ops); // shows name + SHA; OK verifies (no probe)
 }
 
 PicOps *
-pic_ops_alloc (Storage        *storage,
-               DialogsApp     *dialogs,
-               ViewDispatcher *view_dispatcher,
-               uint32_t        view_id)
+pic_ops_alloc (Storage *storage, DialogsApp *dialogs,
+               ViewDispatcher *view_dispatcher, uint32_t view_id)
 {
     PicOps *ops = malloc(sizeof(PicOps));
     memset(ops, 0, sizeof(PicOps));
@@ -432,8 +422,8 @@ pic_ops_alloc (Storage        *storage,
     view_set_context(ops->dump_view, ops);
     view_set_draw_callback(ops->dump_view, dump_draw_cb);
     view_set_input_callback(ops->dump_view, dump_input_cb);
-    ops->anim_timer
-        = furi_timer_alloc(anim_timer_cb, FuriTimerTypePeriodic, ops);
+    ops->anim_timer =
+        furi_timer_alloc(anim_timer_cb, FuriTimerTypePeriodic, ops);
     return ops;
 }
 

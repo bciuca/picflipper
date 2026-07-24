@@ -10,7 +10,7 @@
 #include <stdint.h>
 #include <string.h>
 
-#define UI_WRAP_LINE_CAP  40 // max chars per wrapped line, incl. NUL
+#define UI_WRAP_LINE_CAP 40 // max chars per wrapped line, incl. NUL
 #define UI_WRAP_MAX_LINES 6
 
 // Measures the rendered width of a NUL-terminated string. In the app this wraps
@@ -18,17 +18,13 @@
 typedef uint16_t (*UiWidthFn)(void *ctx, const char *s);
 
 // Greedily pack `s` into `lines`, breaking to a new line whenever adding the
-// next character would exceed `maxw` (measured by `measure`). Always advances at
-// least one character per line, so a glyph wider than `maxw` still terminates.
-// Every character of `s` up to the max_lines/line_cap budget appears exactly
-// once, in order. Returns the number of lines written.
+// next character would exceed `maxw` (measured by `measure`). Always advances
+// at least one character per line, so a glyph wider than `maxw` still
+// terminates. Every character of `s` up to the max_lines/line_cap budget
+// appears exactly once, in order. Returns the number of lines written.
 static inline int
-ui_wrap_hard (const char *s,
-              int         maxw,
-              UiWidthFn   measure,
-              void       *ctx,
-              char        lines[][UI_WRAP_LINE_CAP],
-              int         max_lines)
+ui_wrap_hard (const char *s, int maxw, UiWidthFn measure, void *ctx,
+              char lines[][UI_WRAP_LINE_CAP], int max_lines)
 {
     const int len = (int)strlen(s);
     const int cap = UI_WRAP_LINE_CAP - 1;

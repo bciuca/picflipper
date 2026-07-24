@@ -17,10 +17,8 @@ typedef enum
     ProgStageWrite,
     ProgStageVerify
 } ProgStage;
-typedef void (*ProgProgressCb)(ProgStage stage,
-                               uint32_t  done,
-                               uint32_t  total,
-                               void     *ctx);
+typedef void (*ProgProgressCb)(ProgStage stage, uint32_t done, uint32_t total,
+                               void *ctx);
 
 // fail_addr value when the failure was NOT a verify mismatch (no-device,
 // SD/erase error, user abort) — distinguishes those from a real "Verify FAIL @
@@ -58,9 +56,5 @@ bool pic_prog_verify(PicProgReq *r);
 // bring-up/blank-check. Both manage WREN as the datasheet requires.
 bool pic_prog_bulk_erase(PicIcsp *d); // Table 3-1 (also clears CP)
 bool pic_prog_row_erase_range(        // Table 3-2
-    PicIcsp       *d,
-    uint32_t       start,
-    uint32_t       end,
-    ProgProgressCb cb,
-    void          *ctx,
+    PicIcsp *d, uint32_t start, uint32_t end, ProgProgressCb cb, void *ctx,
     volatile bool *cancel);

@@ -20,17 +20,17 @@ struct GpioPin
 {
     int id;
 };
-static struct GpioPin PGC = { 1 };
-static struct GpioPin PGD = { 2 };
-static struct GpioPin MCLR = { 3 };
+static struct GpioPin PGC  = {1};
+static struct GpioPin PGD  = {2};
+static struct GpioPin MCLR = {3};
 
-static bool     g_pgc;          // last PGC level
-static bool     g_pgd;          // last PGD level
-static bool     g_pgd_output = true; // PGD direction (true = driven output)
-static uint8_t  g_tx[512];      // sampled transmitted bits (driven only)
-static int      g_tx_n;
-static uint8_t  g_rx[64];       // queued bits for reads
-static int      g_rx_n, g_rx_i;
+static bool    g_pgc;               // last PGC level
+static bool    g_pgd;               // last PGD level
+static bool    g_pgd_output = true; // PGD direction (true = driven output)
+static uint8_t g_tx[512];           // sampled transmitted bits (driven only)
+static int     g_tx_n;
+static uint8_t g_rx[64]; // queued bits for reads
+static int     g_rx_n, g_rx_i;
 
 static void
 trace_reset (void)
@@ -105,7 +105,7 @@ bits_lsb (const uint8_t *b, int n)
     return v;
 }
 
-static PicIcsp DEV = { .pgc = &PGC, .pgd = &PGD, .mclr = &MCLR };
+static PicIcsp DEV = {.pgc = &PGC, .pgd = &PGD, .mclr = &MCLR};
 
 int
 main (void)
@@ -113,14 +113,14 @@ main (void)
     // --- 4-bit command, LSb first -------------------------------------------
     trace_reset();
     pic_icsp_cmd4(&DEV, 0b1001); // TBLRD*+
-    CHECK(g_tx_n == 4 && g_tx[0] == 1 && g_tx[1] == 0 && g_tx[2] == 0
-              && g_tx[3] == 1,
+    CHECK(g_tx_n == 4 && g_tx[0] == 1 && g_tx[1] == 0 && g_tx[2] == 0 &&
+              g_tx[3] == 1,
           "cmd4(1001) shifts LSb first -> 1,0,0,1");
 
     trace_reset();
     pic_icsp_cmd4(&DEV, 0b1100); // TBLWT
-    CHECK(g_tx_n == 4 && g_tx[0] == 0 && g_tx[1] == 0 && g_tx[2] == 1
-              && g_tx[3] == 1,
+    CHECK(g_tx_n == 4 && g_tx[0] == 0 && g_tx[1] == 0 && g_tx[2] == 1 &&
+              g_tx[3] == 1,
           "cmd4(1100) shifts LSb first -> 0,0,1,1");
 
     // --- 16-bit payload, LSb first ------------------------------------------
@@ -132,8 +132,8 @@ main (void)
     // --- core instruction = cmd 0000 + 16-bit payload -----------------------
     trace_reset();
     pic_icsp_core_inst(&DEV, 0x6EF8); // MOVWF TBLPTRU
-    CHECK(g_tx_n == 20 && bits_lsb(g_tx, 4) == 0x0
-              && bits_lsb(g_tx + 4, 16) == 0x6EF8,
+    CHECK(g_tx_n == 20 && bits_lsb(g_tx, 4) == 0x0 &&
+              bits_lsb(g_tx + 4, 16) == 0x6EF8,
           "core_inst(0x6EF8): nibble 0000 then payload LSb first");
 
     // --- TBLPTR load sequence (DS39688D Table 4-1 Step 1) -------------------
@@ -152,8 +152,8 @@ main (void)
         for (int k = 0; k < 6 && ok; k++)
         {
             const uint8_t *ins = g_tx + k * 20;
-            ok = ok && bits_lsb(ins, 4) == 0x0
-                 && bits_lsb(ins + 4, 16) == exp[k];
+            ok                 = ok && bits_lsb(ins, 4) == 0x0 &&
+                                 bits_lsb(ins + 4, 16) == exp[k];
         }
         CHECK(ok, "set_tblptr(0x1F2340): six MOVLW/MOVWF core insts, in order");
     }
@@ -180,7 +180,7 @@ main (void)
     // --- Table read: cmd 1001, then 8 driven dummy clocks; byte read LSb->MSb
     trace_reset();
     {
-        uint8_t val   = 0x5A;
+        uint8_t val = 0x5A;
         uint8_t bits[8];
         for (int i = 0; i < 8; i++)
         {
@@ -206,11 +206,11 @@ main (void)
         rx_load(bits, 8);
         uint8_t got = pic_icsp_read_data(&DEV, 0x0A5);
         // Three setup core instructions.
-        CHECK(bits_lsb(g_tx + 0 * 20 + 4, 16) == 0x0100,  // MOVLB 0
+        CHECK(bits_lsb(g_tx + 0 * 20 + 4, 16) == 0x0100, // MOVLB 0
               "read_data: MOVLB k for bank 0");
-        CHECK(bits_lsb(g_tx + 1 * 20 + 4, 16) == 0x51A5,  // MOVF f,W,BANKED
+        CHECK(bits_lsb(g_tx + 1 * 20 + 4, 16) == 0x51A5, // MOVF f,W,BANKED
               "read_data: MOVF f,W,BANKED for f=0xA5");
-        CHECK(bits_lsb(g_tx + 2 * 20 + 4, 16) == 0x6EF5,  // MOVWF TABLAT
+        CHECK(bits_lsb(g_tx + 2 * 20 + 4, 16) == 0x6EF5, // MOVWF TABLAT
               "read_data: MOVWF TABLAT");
         // Shift-out command nibble 0010.
         CHECK(bits_lsb(g_tx + 3 * 20, 4) == 0b0010, // Shift-out TABLAT
@@ -223,7 +223,7 @@ main (void)
     pic_icsp_enter(&DEV);
     {
         uint32_t key = 0;
-        int ok = (g_tx_n == 32); // enter clocks exactly the 32 key bits
+        int      ok  = (g_tx_n == 32); // enter clocks exactly the 32 key bits
         for (int i = 0; i < 32 && ok; i++)
         {
             key |= (uint32_t)(g_tx[i] & 1) << (31 - i); // MSb first

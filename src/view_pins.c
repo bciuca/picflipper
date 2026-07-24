@@ -51,16 +51,14 @@ pins_tristate (void)
 static void
 pins_probe (PicPinsView *p)
 {
-    PicIcsp d
-        = { .pgc = PIC_PIN_PGC, .pgd = PIC_PIN_PGD, .mclr = PIC_PIN_MCLR };
+    PicIcsp d = {.pgc = PIC_PIN_PGC, .pgd = PIC_PIN_PGD, .mclr = PIC_PIN_MCLR};
     pic_icsp_init(&d);
     pic_icsp_enter(&d);
     uint16_t devid = pic_read_device_id(&d);
     pic_icsp_exit(&d);
     pins_tristate();
     with_view_model(
-        p->view,
-        PinsModel * m,
+        p->view, PinsModel * m,
         {
             m->probed = true;
             m->devid  = devid;
@@ -103,8 +101,8 @@ draw_status_badge (Canvas *canvas, const char *text)
     canvas_set_color(canvas, ColorBlack);
     canvas_draw_box(canvas, bx, by, bw, bh); // black pill
     canvas_set_color(canvas, ColorWhite);
-    canvas_draw_str_aligned(
-        canvas, bx + 4, by + bh / 2 + 1, AlignLeft, AlignCenter, text);
+    canvas_draw_str_aligned(canvas, bx + 4, by + bh / 2 + 1, AlignLeft,
+                            AlignCenter, text);
     canvas_set_color(canvas, ColorBlack);
 }
 
@@ -148,8 +146,7 @@ pins_enter_cb (void *ctx)
     p->tick = 0;
     pins_tristate();
     with_view_model(
-        p->view,
-        PinsModel * m,
+        p->view, PinsModel * m,
         {
             m->probed = false;
             m->frame  = 0;
