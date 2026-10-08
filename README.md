@@ -4,7 +4,7 @@
 
 This is an ICSP programmer for the PIC18F97J60 family of MCUs. I built this app because I was impatient and too cheap to order a PICkit5 programmer. And I wanted to see if it was even possible on a Flipper Zero. 
 
-This app features:
+Features:
  - Dump full flash binary image in `.bin` + Intel HEX
  - Dump live RAM
  - Write binary image with option to protect boot, with byte verification step at the end of flashing
